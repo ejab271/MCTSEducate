@@ -2,7 +2,7 @@
 import Node from './Node';
 import Tree from './Tree';
 import UCT from './UCT';
-const util = require('util');
+
 
 let MonteCarloTreeSearch = {
   // constructor() {
@@ -146,7 +146,7 @@ let checkMoves = (promisingNode) => {
   let node = promisingNode.state.board;
   let moves = 9;
   for(var i = 0; i < node.boardValues.length; i ++){
-    if( node.boardValues[i] != 0){
+    if( node.boardValues[i] !== 0){
       moves --;
     }
   }

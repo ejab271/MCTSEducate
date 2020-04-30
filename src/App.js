@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Checkbox, Button, ModalActions } from 'semantic-ui-react';
-//import simulateAIPlay, { BotPlay } from './TicTacToe/gameTTT';
-import {homanMove,AIMove,AIPlay} from './TicTacToe/gameTTT';
-import GameLogic from './GameLogic';
-import TreeView from './TicTacToe/TreeView';
-import Data from './TicTacToe/Data';
-import {Tree, treeUtil} from 'react-d3-tree';
-import simus from './MonteCarlo/MonteCarlo';
+import { Button } from 'semantic-ui-react';
+import {homanMove,AIPlay} from './TicTacToe/gameTTT';
+import {Tree} from 'react-d3-tree';
+
 
 
 let dataItems = {};
@@ -29,6 +25,8 @@ dataItems = {
     winscore: 0
   }
 };
+const translat = { x: 450, y: 35 };
+const zoom = 0.7;
 
 const myTreeData = [
   {
@@ -43,70 +41,23 @@ const myTreeData = [
 ];
 
 
-    const Node = {
-      "childArray": [],
-      "Parent": { 
-          "Node": {
-              "childArray": [],
-              "Parent": {},
-              "state": {
-                          "board":
-                              {
-                                  "DEFAULT_BOARD_SIZE": 3,
-                                  "DRAW": 0,
-                                  "IN_PROGRESS": -1,
-                                  "P1": 1,
-                                  "P2": 2,
-                                  "boardValues": [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                  "totalMoves": 1
-                              },
-                      "playerNo": 1,
-                      "visitCount":1000,
-                      "winscore": 950  
-                  }
-              }
-          },
-      "state": {
-          "board": {
-              "DEFAULT_BOARD_SIZE": 3,
-              "DRAW": 0,
-              "IN_PROGRESS": -1,
-              "P1": 1,
-              "P2": 2,
-              "boardValues": [0, 0, 0, 0, 1, 0, 0, 0, 0],
-              "totalMoves": 1
-          },
-          "playerNo": 1,
-          "visitCount":100,
-          "winscore": 80  
-      }
-  }
-  const dataItemss = {
-      "Node": 
-        {
-          "childArray": [Node, Node, Node],
-          "state": {
-              "board":   {"DEFAULT_BOARD_SIZE": 3,
-                              "DRAW": 0,
-                          "IN_PROGRESS": -1,
-                          "P1": 1,
-                          "P2": 2,
-                          "boardValues": [0, 0, 0, 0, 1, 0, 0, 0, 0],
-                          "totalMoves": 1
-                              },
-              "playerNo": 1,
-              "visitCount":100,
-              "winscore": 80  
-          }
-      }
-  }
+  
 
-  const svgSquare = {
+  const svgCircle = {
     shape: 'circle',
     shapeProps: {
       r: "10",
       stroke: 'black',
-      strokeWidth: 2
+      strokeWidth: 2,
+    }
+  }
+  const svgSquare = {
+    shape: 'rect',
+    shapeProps: {
+      width: 20,
+      height: 20,
+      x: -10,
+      y: -10,
     }
   }
 
@@ -203,7 +154,7 @@ class App extends Component {
       
 
       
-      //console.log("after calling setState: ", this.state.data);
+  
 
       return action.action;
     }
@@ -213,8 +164,7 @@ class App extends Component {
 
 
   render() {
-    //console.log(generated);
-   //dataItems= this.state.data;
+  
     console.log("Data before render:",this.state.data);
     console.log("DataItems before render:",this.state.treeData);
   
@@ -249,9 +199,9 @@ class App extends Component {
   
           <br />
         
-          <div id="treeWrapper" style={{width: '65em', height: '45em'}}>
+          <div id="treeWrapper" style={{width: '70em', height: '45em'} }>
 
-<Tree data={this.state.treeData} orientation= "vertical"  nodeSvgShape={svgSquare}/>
+<Tree data={this.state.treeData} zoom = {zoom} translate = {translat} orientation= "vertical" nodeSvgShape={svgCircle} />
 
 </div>
     	
@@ -281,13 +231,7 @@ const Square = props => {
     </button>
   );
 };
-const Cell = props => {
-  return (
-    <button className="cell"  data-pro={props.value} onClick={props.onClick}>
-      
-    </button>
-  );
-};
+;
 
 class TicTacToeBoard extends Component {
   renderSquare(i) {
@@ -320,28 +264,7 @@ class TicTacToeBoard extends Component {
   }
 
 
-/* render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-        <div className="test"><TreeView size={[100,100]} /> </div>
-      </div>
-    );
-  }*/
+
  render(){
     return(
      
@@ -505,13 +428,12 @@ class TicTacToeApp extends Component {
 // }
 
 
-function createNode(data,prevBoard,boardCheck,svgSquare) {
-  let size = 3;
+function createNode(data,prevBoard) {
+
   let array= data.state["board"].boardValues;
   let board = prevBoard;
-  let check = data.state["board"].boardValues;;
+  let score= data.state.winScore;
   
-
   //console.log(board);
   if (calculateCurrentDepth(data) > 5) {
     return [];
@@ -521,18 +443,21 @@ function createNode(data,prevBoard,boardCheck,svgSquare) {
   if (data.parent === undefined) {
     collapse = false;
     array = board;
-    //array= check.state["board"].boardValues;
+   
+  }
+  if (score < -10) {
+      score=-10;
+   
   }
   
-  //console.log("createNodeBoard",array);
+  
   return {
     name: array.toString(),
     _collapsed: collapse,
     attributes: {
-      //board: boardCheck.state,
       playerNo: data.state.playerNo,
       visitCount: data.state.visitCount,
-      winscore: data.state.winScore
+      winscore: score
     },
     children: createChildren(data.childArray)
   };
@@ -559,8 +484,7 @@ function calculateCurrentDepth(node) {
   return depth;
 }
 
-// const generated = getExpected(dataItemss);
-//console.log(generated);
+
 
 const calculateWinner = squares => {
   const lines = [

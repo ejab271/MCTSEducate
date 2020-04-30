@@ -7,7 +7,6 @@ let AIBattle = null;
 
 let simulateAiPlay = () => {
   let board = new Board();
-  let oldboard= new Board();
   let player = 1;
   let totalMoves = 9;
   for (var i = 0; i < totalMoves; i++) {

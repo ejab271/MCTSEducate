@@ -30,7 +30,7 @@
     "react-d3-tree": "^1.12.2",
     "react-dom": "^16.5.2",
     "react-faux-dom": "^3.0.0",
-    "react-scripts": "^2.1.4",
+    "react-scripts": "^5.0.1",
     "react-scroll": "^1.4.0",
     "react-select": "^1.0.0-rc.1",
     "recharts": "^0.21.2",
